@@ -1,8 +1,7 @@
-const express = require("express");
-const router = express.Router();
+import express from "express";
+import showController from "../controllers/showController.js";
 
-// Controller import
-const showController = require("../controllers/showController.js");
+const router = express.Router();
 
 // TMDB Now Playing Movies
 router.get("/now-playing", showController.getNowPlayingShows);
@@ -11,4 +10,4 @@ router.get("/now-playing", showController.getNowPlayingShows);
 router.post("/add", showController.createShow);
 router.get("/", showController.getAllShows);
 
-module.exports = router;
+export default router; // ✅ Default export
