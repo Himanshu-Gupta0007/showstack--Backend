@@ -15,28 +15,19 @@ connectDB();
 
 const app = express();
 
-// 🔹 Middlewares
 app.use(cors());
 app.use(express.json());
 app.use(clerkMiddleware());
 
-// 🔹 Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/shows", showRoutes);
 
-// 🔹 Test route (VERY IMPORTANT)
 app.get("/", (req, res) => {
   res.send("Backend running smoothly! 🚀");
 });
 
-// 🔹 Inngest endpoint
 app.use("/api/inngest", serve({ client: inngest, functions }));
 
-// ❌ REMOVE this for Vercel
-// app.listen(PORT, () => {
-//   console.log(`Server running on port ${PORT}`);
-// });
-
-// ✅ EXPORT APP (MOST IMPORTANT)
+// ❌ NO app.listen
 export default app;
