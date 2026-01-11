@@ -1,10 +1,11 @@
 import { getAuth } from "@clerk/express";
 
+const ADMIN_EMAILS = ["guptahimu90@gmail.com"]; // 👈 apna email
+
 export const protectAdmin = (req, res, next) => {
   try {
     const auth = getAuth(req);
 
-    // 🔒 Not logged in
     if (!auth || !auth.userId) {
       return res.status(401).json({
         success: false,
@@ -12,22 +13,22 @@ export const protectAdmin = (req, res, next) => {
       });
     }
 
-    // 🔑 Role from Clerk metadata
-    const role = auth.sessionClaims?.publicMetadata?.role;
+    const email =
+      auth.sessionClaims?.email ||
+      auth.sessionClaims?.primary_email_address;
 
-    // 🚫 Not admin
-    if (role !== "admin") {
+    if (!ADMIN_EMAILS.includes(email)) {
       return res.status(403).json({
         success: false,
         message: "Admin access only",
       });
     }
 
-    // ✅ Attach user to request
     req.user = {
       id: auth.userId,
+      email,
       sessionId: auth.sessionId,
-      role,
+      role: "admin",
     };
 
     next();
