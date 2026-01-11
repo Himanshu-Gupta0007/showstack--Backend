@@ -1,13 +1,24 @@
 import express from "express";
-import showController from "../controllers/showController.js";
+import {
+  createShow,
+  getNowPlayingShows,
+  getAllShows,
+   getShowsByMovieId
+} from "../controllers/showController.js";
+
+import { protectAdmin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// TMDB Now Playing Movies
-router.get("/now-playing", showController.getNowPlayingShows);
+// 🔒 ADMIN ONLY
+router.post("/add", createShow);
+router.get("/now-playing",  getNowPlayingShows);
 
-// Local DB Shows CRUD
-router.post("/add", showController.createShow);
-router.get("/", showController.getAllShows);
 
-export default router; // ✅ Default export
+
+// 🌍 PUBLIC
+router.get("/", getAllShows);
+// 🎯 movieId se shows lao
+router.get("/movie/:movieId", getShowsByMovieId);
+
+export default router;

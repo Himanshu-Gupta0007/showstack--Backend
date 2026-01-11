@@ -1,19 +1,40 @@
-const jwt = require("jsonwebtoken");
+import { getAuth } from "@clerk/express";
 
-const protect = (req, res, next) => {
-  const token = req.headers.authorization;
-
-  if (!token) {
-    return res.status(401).json({ message: "Not authorized" });
-  }
-
+export const protectAdmin = (req, res, next) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    const auth = getAuth(req);
+
+    // 🔒 Not logged in
+    if (!auth || !auth.userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized (login required)",
+      });
+    }
+
+    // 🔑 Role from Clerk metadata
+    const role = auth.sessionClaims?.publicMetadata?.role;
+
+    // 🚫 Not admin
+    if (role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Admin access only",
+      });
+    }
+
+    // ✅ Attach user to request
+    req.user = {
+      id: auth.userId,
+      sessionId: auth.sessionId,
+      role,
+    };
+
     next();
   } catch (error) {
-    res.status(401).json({ message: "Token invalid" });
+    return res.status(401).json({
+      success: false,
+      message: "Clerk authentication failed",
+    });
   }
 };
-
-module.exports = protect;
