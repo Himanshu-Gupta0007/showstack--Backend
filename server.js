@@ -26,7 +26,7 @@ const corsOptions = {
   origin: [
     "http://localhost:5173", // React frontend
     "http://localhost:5000", // backend server if needed
-    "https://your-production-domain.com", // production
+    "https://showstack-frontend.vercel.app", // production
   ],
   credentials: true, // cookies & headers allow karne ke liye
 };
