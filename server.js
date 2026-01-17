@@ -25,7 +25,8 @@ const app = express();
 const corsOptions = {
   origin: [
     "http://localhost:5173", // React frontend
-    "http://localhost:5000", // backend server if needed
+    "http://localhost:5000",
+           "https://showstack-backend-hjda.onrender.com",
     "https://showstack-frontend.vercel.app", // production
   ],
   credentials: true, // cookies & headers allow karne ke liye
